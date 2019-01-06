@@ -1,15 +1,15 @@
 import React, { Component } from 'react'
-import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
+import { withRouter } from 'react-router-dom'
 
 class ShowLeagues extends Component {
-  onLeagueClick = e => {
-    alert('clicked')
+  onLeagueClick = leagueId => {
+    this.props.history.push(`/league/${leagueId}`)
   }
 
   render() {
     const leagues = this.props.leagues.map(league => (
-      <tr key={league._id} onClick={this.onLeagueClick}>
+      <tr key={league._id} onClick={() => this.onLeagueClick(league.leagueId)}>
         <td>{league.leagueName}</td>
         <td>{league.leagueId}</td>
       </tr>
@@ -32,4 +32,8 @@ class ShowLeagues extends Component {
   }
 }
 
-export default connect(null)(ShowLeagues)
+ShowLeagues.propTypes = {
+  leagues: PropTypes.array.isRequired
+}
+
+export default withRouter(ShowLeagues)

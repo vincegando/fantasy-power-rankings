@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
+import { withRouter } from 'react-router-dom'
+import { importLeague, clearImportErrors } from '../../actions/leagueActions'
 import TextFieldGroup from '../common/TextFieldGroup'
-import { importLeague } from '../../actions/leagueActions'
 
 class Import extends Component {
   constructor() {
@@ -13,9 +14,17 @@ class Import extends Component {
     }
   }
 
-  // component did mount test
+  componentDidMount() {
+    this.props.clearImportErrors()
+  }
 
-  // get derived state
+  static getDerivedStateFromProps(nextProps, prevState) {
+    if (nextProps.errors !== prevState.errors) {
+      return { errors: nextProps.errors }
+    } else {
+      return null
+    }
+  }
 
   onChange = e => {
     this.setState({ [e.target.name]: e.target.value })
@@ -60,6 +69,7 @@ class Import extends Component {
 
 Import.propTypes = {
   importLeague: PropTypes.func.isRequired,
+  clearImportErrors: PropTypes.func.isRequired,
   league: PropTypes.object.isRequired,
   errors: PropTypes.object.isRequired
 }
@@ -71,5 +81,5 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { importLeague }
-)(Import)
+  { importLeague, clearImportErrors }
+)(withRouter(Import))

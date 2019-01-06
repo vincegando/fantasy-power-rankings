@@ -15,6 +15,7 @@ import Register from './components/auth/Register'
 import Login from './components/auth/Login'
 import Dashboard from './components/dashboard/Dashboard'
 import Import from './components/import-league/Import'
+import League from './components/league/League'
 
 import './App.css'
 
@@ -52,6 +53,13 @@ class App extends Component {
               </Switch>
               <Switch>
                 <PrivateRoute exact path="/import" component={Import} />
+              </Switch>
+              <Switch>
+                <PrivateRoute
+                  exact
+                  path="/league/:leagueId"
+                  component={League}
+                />
               </Switch>
             </div>
           </div>

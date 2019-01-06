@@ -6,6 +6,10 @@ const RankingSchema = new Schema({
     type: String,
     required: true
   },
+  title: {
+    type: String,
+    required: true
+  },
   rankings: [
     {
       rank: {

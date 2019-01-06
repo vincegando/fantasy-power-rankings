@@ -41,6 +41,7 @@ router.post(
 
             const newRanking = new Ranking({
               leagueId: league.leagueId,
+              title: req.body.title,
               rankings: rankings,
               author: req.user.id
             })
@@ -77,6 +78,7 @@ router.post(
             const rankings = JSON.parse(req.body.rankings)
 
             ranking.rankings = rankings
+            ranking.title = req.body.title
             ranking.save().then(ranking => res.json(ranking))
           } else {
             return res.status(401).json({
@@ -131,14 +133,15 @@ router.get('/:id', (req, res) => {
     .catch(err => res.status(400).json(err))
 })
 
-// @route GET api/rankings/league
+// @route GET api/rankings/league/:leagueId
 // @desc Get all rankings belonging to a specified league
 // @access Private
 router.get(
-  '/league/:league_id',
+  '/league/:leagueId',
   passport.authenticate('jwt', { session: false }),
   (req, res) => {
-    Ranking.find({ leagueId: req.params.league_id })
+    Ranking.find({ leagueId: req.params.leagueId })
+      .populate('author', ['username'])
       .then(rankings => {
         if (!rankings) {
           return res.json({

@@ -79,7 +79,6 @@ router.post(
             league.save().then(league => res.json(league))
           }
         } else {
-          console.log('leagueName: ' + leagueName)
           const newLeague = new League({
             creator: req.user.id,
             members: [req.user.id],
