@@ -25,7 +25,7 @@ class ShowLeagues extends Component {
               <th>League ID</th>
             </tr>
           </thead>
-          {leagues}
+          <tbody>{leagues}</tbody>
         </table>
       </div>
     )

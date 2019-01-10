@@ -7,17 +7,18 @@ class ShowRankings extends Component {
   render() {
     const rankings = this.props.rankings.map(ranking => (
       <tr key={ranking._id}>
+        <td>{ranking.title}</td>
+        <td>{ranking.author.username}</td>
         <td>
           <Moment format="MM/DD/YYYY">{ranking.created_at}</Moment>
         </td>
-        <td>{ranking.author.username}</td>
         <td>
           <Link to="/dashboard" className="btn btn-danger">
             Edit
           </Link>
         </td>
         <td>
-          <Link to="/dashboard" className="btn btn-info">
+          <Link to={`/ranking/${ranking._id}`} className="btn btn-info">
             Show
           </Link>
         </td>
@@ -30,13 +31,14 @@ class ShowRankings extends Component {
         <table className="table">
           <thead>
             <tr>
-              <th>Date Created</th>
+              <th>Title</th>
               <th>Created By</th>
+              <th>Date Created</th>
               <th />
               <th />
             </tr>
           </thead>
-          {rankings}
+          <tbody>{rankings}</tbody>
         </table>
       </div>
     )

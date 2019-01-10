@@ -16,6 +16,7 @@ import Login from './components/auth/Login'
 import Dashboard from './components/dashboard/Dashboard'
 import Import from './components/import-league/Import'
 import League from './components/league/League'
+import ViewRanking from './components/rankings/ViewRanking'
 
 import './App.css'
 
@@ -48,6 +49,7 @@ class App extends Component {
             <div className="container">
               <Route exact path="/register" component={Register} />
               <Route exact path="/login" component={Login} />
+              <Route exact path="/ranking/:id" component={ViewRanking} />
               <Switch>
                 <PrivateRoute exact path="/dashboard" component={Dashboard} />
               </Switch>

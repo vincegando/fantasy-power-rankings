@@ -18,7 +18,7 @@ class League extends Component {
 
     let pageContent
 
-    if (league == null || loading || leagueLoading) {
+    if (league === null || loading || leagueLoading) {
       pageContent = <h3>Loading...</h3>
     } else {
       pageContent = (

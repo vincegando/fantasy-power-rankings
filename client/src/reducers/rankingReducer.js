@@ -1,4 +1,9 @@
-import { GET_RANKINGS, LOADING_RANKINGS } from '../actions/types'
+import {
+  GET_RANKINGS,
+  GET_RANKING,
+  CREATE_RANKING,
+  LOADING_RANKINGS
+} from '../actions/types'
 
 const initialState = {
   rankings: [],
@@ -8,16 +13,27 @@ const initialState = {
 
 export default function(state = initialState, action) {
   switch (action.type) {
-    case LOADING_RANKINGS:
-      return {
-        ...state,
-        loading: true
-      }
     case GET_RANKINGS:
       return {
         ...state,
         rankings: action.payload,
         loading: false
+      }
+    case GET_RANKING:
+      return {
+        ...state,
+        ranking: action.payload,
+        loading: false
+      }
+    case CREATE_RANKING:
+      return {
+        ...state,
+        rankings: [...state.rankings, action.payload]
+      }
+    case LOADING_RANKINGS:
+      return {
+        ...state,
+        loading: true
       }
     default:
       return state
