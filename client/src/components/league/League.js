@@ -4,6 +4,7 @@ import PropTypes from 'prop-types'
 import { getCurrentLeague } from '../../actions/leagueActions'
 import { getRankings } from '../../actions/rankingActions'
 import ShowRankings from './ShowRankings'
+import { Link } from 'react-router-dom'
 
 class League extends Component {
   componentDidMount() {
@@ -35,7 +36,15 @@ class League extends Component {
       <div className="league">
         <div className="container">
           <div className="row">
-            <div className="col-md-12">{pageContent}</div>
+            <div className="col-md-12">
+              {pageContent}
+              <Link
+                to={`/create-ranking/${league.leagueId}`}
+                className="btn btn-info"
+              >
+                Create a new Ranking
+              </Link>
+            </div>
           </div>
         </div>
       </div>

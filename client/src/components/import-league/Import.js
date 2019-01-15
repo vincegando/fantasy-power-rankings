@@ -6,8 +6,8 @@ import { importLeague, clearImportErrors } from '../../actions/leagueActions'
 import TextFieldGroup from '../common/TextFieldGroup'
 
 class Import extends Component {
-  constructor() {
-    super()
+  constructor(props) {
+    super(props)
     this.state = {
       leagueId: '',
       errors: {}

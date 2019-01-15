@@ -17,6 +17,7 @@ import Dashboard from './components/dashboard/Dashboard'
 import Import from './components/import-league/Import'
 import League from './components/league/League'
 import ViewRanking from './components/rankings/ViewRanking'
+import CreateRanking from './components/rankings/CreateRanking'
 
 import './App.css'
 
@@ -61,6 +62,13 @@ class App extends Component {
                   exact
                   path="/league/:leagueId"
                   component={League}
+                />
+              </Switch>
+              <Switch>
+                <PrivateRoute
+                  exact
+                  path="/create-ranking/:leagueId"
+                  component={CreateRanking}
                 />
               </Switch>
             </div>

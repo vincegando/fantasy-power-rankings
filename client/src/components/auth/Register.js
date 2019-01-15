@@ -6,8 +6,8 @@ import { registerUser, clearErrors } from '../../actions/authActions'
 import TextFieldGroup from '../common/TextFieldGroup'
 
 class Register extends Component {
-  constructor() {
-    super()
+  constructor(props) {
+    super(props)
     this.state = {
       username: '',
       email: '',

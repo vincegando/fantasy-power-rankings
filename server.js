@@ -20,7 +20,10 @@ app.use(bodyParser.json())
 app.use(cors())
 
 mongoose
-  .connect(db)
+  .connect(
+    db,
+    { useNewUrlParser: true }
+  )
   .then(() => console.log('MongoDB connected...'))
   .catch(err => console.log(err))
 

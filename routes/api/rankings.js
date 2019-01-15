@@ -37,12 +37,10 @@ router.post(
                 'You are not authorized to make rankings for this league.'
             })
           } else {
-            const rankings = JSON.parse(req.body.rankings)
-
             const newRanking = new Ranking({
               leagueId: league.leagueId,
               title: req.body.title,
-              rankings: rankings,
+              rankings: req.body.rankings,
               author: req.user.id
             })
 

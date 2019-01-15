@@ -47,15 +47,10 @@ export const getRanking = id => dispatch => {
 }
 
 // Create a new ranking
-export const createRanking = rankingData => dispatch => {
+export const createRanking = (rankingData, history, leagueId) => dispatch => {
   axios
     .post('/api/rankings', rankingData)
-    .then(res =>
-      dispatch({
-        type: CREATE_RANKING,
-        payload: res.data
-      })
-    )
+    .then(res => history.push('/league/' + leagueId))
     .catch(err =>
       dispatch({
         type: GET_ERRORS,
