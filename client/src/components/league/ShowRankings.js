@@ -1,10 +1,13 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import Moment from 'react-moment'
 import { Link } from 'react-router-dom'
 
 class ShowRankings extends Component {
   render() {
+    const { user } = this.props.auth
+
     const rankings = this.props.rankings.map(ranking => (
       <tr key={ranking._id}>
         <td>{ranking.title}</td>
@@ -13,9 +16,14 @@ class ShowRankings extends Component {
           <Moment format="MM/DD/YYYY">{ranking.created_at}</Moment>
         </td>
         <td>
-          <Link to="/dashboard" className="btn btn-danger">
-            Edit
-          </Link>
+          {user.username === ranking.author.username ? (
+            <Link
+              to={`/edit-ranking/${ranking._id}`}
+              className="btn btn-danger"
+            >
+              Edit
+            </Link>
+          ) : null}
         </td>
         <td>
           <Link to={`/ranking/${ranking._id}`} className="btn btn-info">
@@ -46,7 +54,12 @@ class ShowRankings extends Component {
 }
 
 ShowRankings.propTypes = {
-  rankings: PropTypes.array.isRequired
+  rankings: PropTypes.array.isRequired,
+  auth: PropTypes.object.isRequired
 }
 
-export default ShowRankings
+const mapStateToProps = state => ({
+  auth: state.auth
+})
+
+export default connect(mapStateToProps)(ShowRankings)

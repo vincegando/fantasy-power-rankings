@@ -20,6 +20,10 @@ const RankingSchema = new Schema({
         type: String,
         required: true
       },
+      record: {
+        type: String,
+        required: true
+      },
       description: {
         type: String,
         required: true

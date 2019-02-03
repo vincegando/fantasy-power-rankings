@@ -5,12 +5,13 @@ import {
   LOADING_LEAGUES,
   GET_ERRORS,
   CLEAR_ERRORS,
-  GET_CURRENT_LEAGUE
+  GET_CURRENT_LEAGUE,
+  STOP_LOADING_LEAGUE
 } from './types'
 
 // Get all leagues belonging to a user
 export const getLeagues = () => dispatch => {
-  dispatch(setLeaguesLoading())
+  setLeaguesLoading()
   axios
     .get('/api/leagues')
     .then(res =>
@@ -44,7 +45,7 @@ export const importLeague = (leagueId, history) => dispatch => {
 
 // Get current league by league id
 export const getCurrentLeague = leagueId => dispatch => {
-  dispatch(setLeaguesLoading())
+  setLeaguesLoading()
   axios
     .get(`/api/leagues/${leagueId}`)
     .then(res =>
@@ -62,10 +63,15 @@ export const getCurrentLeague = leagueId => dispatch => {
 }
 
 // set leagues loading in state
-export const setLeaguesLoading = () => {
-  return {
+export const setLeaguesLoading = () => dispatch => {
+  dispatch({
     type: LOADING_LEAGUES
-  }
+  })
+}
+export const stopLeaguesLoading = () => dispatch => {
+  dispatch({
+    type: STOP_LOADING_LEAGUE
+  })
 }
 
 export const clearImportErrors = () => dispatch => {

@@ -1,8 +1,8 @@
 import {
   GET_RANKINGS,
   GET_RANKING,
-  CREATE_RANKING,
-  LOADING_RANKINGS
+  LOADING_RANKINGS,
+  STOP_LOADING_RANKING
 } from '../actions/types'
 
 const initialState = {
@@ -25,15 +25,15 @@ export default function(state = initialState, action) {
         ranking: action.payload,
         loading: false
       }
-    case CREATE_RANKING:
-      return {
-        ...state,
-        rankings: [...state.rankings, action.payload]
-      }
     case LOADING_RANKINGS:
       return {
         ...state,
         loading: true
+      }
+    case STOP_LOADING_RANKING:
+      return {
+        ...state,
+        loading: false
       }
     default:
       return state

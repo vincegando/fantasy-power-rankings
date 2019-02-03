@@ -73,9 +73,9 @@ router.post(
             .json({ notfound: 'This ranking was not found.' })
         } else {
           if (ranking.author.toString() === req.user.id) {
-            const rankings = JSON.parse(req.body.rankings)
+            // const rankings = JSON.parse(req.body.rankings)
 
-            ranking.rankings = rankings
+            ranking.rankings = req.body.rankings
             ranking.title = req.body.title
             ranking.save().then(ranking => res.json(ranking))
           } else {

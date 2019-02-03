@@ -18,6 +18,7 @@ import Import from './components/import-league/Import'
 import League from './components/league/League'
 import ViewRanking from './components/rankings/ViewRanking'
 import CreateRanking from './components/rankings/CreateRanking'
+import EditRanking from './components/rankings/EditRanking'
 
 import './App.css'
 
@@ -69,6 +70,13 @@ class App extends Component {
                   exact
                   path="/create-ranking/:leagueId"
                   component={CreateRanking}
+                />
+              </Switch>
+              <Switch>
+                <PrivateRoute
+                  exact
+                  path="/edit-ranking/:id"
+                  component={EditRanking}
                 />
               </Switch>
             </div>

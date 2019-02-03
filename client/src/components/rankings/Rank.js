@@ -15,12 +15,13 @@ class Rank extends Component {
             isDragging={snapshot.isDragging}
           >
             <h4>
-              {this.props.team.standing}. {this.props.team.teamName} (
+              {this.props.rank}. {this.props.team.teamName} (
               {this.props.team.record})
             </h4>
             <TextAreaFieldGroup
               placeholder="Description"
               name="description"
+              value={this.props.team.description}
               onChange={this.props.onChange}
             />
           </div>

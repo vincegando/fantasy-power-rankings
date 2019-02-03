@@ -1,7 +1,8 @@
 import {
   GET_LEAGUES,
   GET_CURRENT_LEAGUE,
-  LOADING_LEAGUES
+  LOADING_LEAGUES,
+  STOP_LOADING_LEAGUE
 } from '../actions/types'
 
 const initialState = {
@@ -28,6 +29,11 @@ export default function(state = initialState, action) {
       return {
         ...state,
         loading: true
+      }
+    case STOP_LOADING_LEAGUE:
+      return {
+        ...state,
+        loading: false
       }
     default:
       return state

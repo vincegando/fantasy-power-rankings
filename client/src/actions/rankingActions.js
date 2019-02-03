@@ -3,9 +3,9 @@ import axios from 'axios'
 import {
   GET_RANKINGS,
   GET_RANKING,
-  CREATE_RANKING,
   LOADING_RANKINGS,
-  GET_ERRORS
+  GET_ERRORS,
+  STOP_LOADING_RANKING
 } from './types'
 
 // Get all rankings belonging to a specified league
@@ -29,7 +29,7 @@ export const getRankings = leagueId => dispatch => {
 
 // Get ranking by id
 export const getRanking = id => dispatch => {
-  dispatch(setRankingsLoading())
+  setRankingsLoading()
   axios
     .get(`/api/rankings/${id}`)
     .then(res =>
@@ -59,9 +59,33 @@ export const createRanking = (rankingData, history, leagueId) => dispatch => {
     )
 }
 
+// Edit a ranking
+export const editRanking = (
+  rankingData,
+  history,
+  leagueId,
+  rankingId
+) => dispatch => {
+  axios
+    .post(`/api/rankings/${rankingId}`, rankingData)
+    .then(res => history.push('/league/' + leagueId))
+    .catch(err =>
+      dispatch({
+        type: GET_ERRORS,
+        payload: err.response.data
+      })
+    )
+}
+
 // set loading in state
-export const setRankingsLoading = () => {
-  return {
+export const setRankingsLoading = () => dispatch => {
+  dispatch({
     type: LOADING_RANKINGS
-  }
+  })
+}
+
+export const stopRankingsLoading = () => dispatch => {
+  dispatch({
+    type: STOP_LOADING_RANKING
+  })
 }

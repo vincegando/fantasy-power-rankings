@@ -1,10 +1,15 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
+import axios from 'axios'
 import { withRouter } from 'react-router-dom'
 import { DragDropContext, Droppable } from 'react-beautiful-dnd'
 import { createRanking } from '../../actions/rankingActions'
-import { getCurrentLeague } from '../../actions/leagueActions'
+import {
+  getCurrentLeague,
+  setLeaguesLoading,
+  stopLeaguesLoading
+} from '../../actions/leagueActions'
 import Rank from './Rank'
 import TextFieldGroup from '../common/TextFieldGroup'
 
@@ -14,20 +19,37 @@ class CreateRanking extends Component {
     this.state = {
       title: '',
       teamInfo: [],
+      loading: false,
       errors: {}
     }
   }
 
-  async componentDidMount() {
-    await this.props.getCurrentLeague(this.props.match.params.leagueId)
-    const teamInfo = await this.props.league.league.teams.map(team => {
-      team.description = ''
-      return team
-    })
-    this.setState({
-      teamInfo: teamInfo
-    })
+  componentDidMount() {
+    setLeaguesLoading()
+    axios
+      .get(`/api/leagues/${this.props.match.params.leagueId}`)
+      .then(res => {
+        stopLeaguesLoading()
+        const teamInfo = res.data.teams
+          .sort((a, b) => a.standing - b.standing)
+          .map(team => {
+            team.description = ''
+            return team
+          })
+
+        this.setState({
+          teamInfo: teamInfo,
+          loading: false
+        })
+      })
+      .catch(err => {
+        stopLeaguesLoading()
+        this.setState({
+          loading: false
+        })
+      })
   }
+
   static getDerivedStateFromProps(nextProps, prevState) {
     if (nextProps.errors !== prevState.errors) {
       return { errors: nextProps.errors }
@@ -80,7 +102,7 @@ class CreateRanking extends Component {
   onSubmitClick = async e => {
     e.preventDefault()
     const stripped = this.state.teamInfo.map(
-      ({ _id, owners, record, standing, ...rest }, index) => {
+      ({ _id, owners, standing, ...rest }, index) => {
         return {
           ...rest,
           rank: index + 1
@@ -100,37 +122,47 @@ class CreateRanking extends Component {
   }
 
   render() {
-    const { errors } = this.state
+    const { errors, loading, teamInfo } = this.state
+
+    let rankingContent
+    if (loading || teamInfo.length === 0) {
+      rankingContent = <h3>Loading...</h3>
+    } else {
+      rankingContent = (
+        <DragDropContext onDragEnd={this.onDragEnd}>
+          <TextFieldGroup
+            name="title"
+            placeholder="Title"
+            value={this.state.title}
+            onChange={this.onChange}
+            error={errors.title}
+          />
+          <Droppable droppableId="droppable">
+            {(provided, snapshot) => (
+              <div ref={provided.innerRef}>
+                {teamInfo.map((team, index) => (
+                  <Rank
+                    key={team._id}
+                    team={team}
+                    rank={team.standing}
+                    index={index}
+                    onChange={this.handleDescriptionChange(team._id)}
+                  />
+                ))}
+                {provided.placeholder}
+              </div>
+            )}
+          </Droppable>
+        </DragDropContext>
+      )
+    }
 
     return (
       <div className="create-ranking">
         <div className="container">
           <div className="row">
             <div className="col-md-12">
-              <DragDropContext onDragEnd={this.onDragEnd}>
-                <TextFieldGroup
-                  name="title"
-                  placeholder="Title"
-                  value={this.state.title}
-                  onChange={this.onChange}
-                  error={errors.title}
-                />
-                <Droppable droppableId="droppable">
-                  {(provided, snapshot) => (
-                    <div ref={provided.innerRef}>
-                      {this.state.teamInfo.map((team, index) => (
-                        <Rank
-                          key={team._id}
-                          team={team}
-                          index={index}
-                          onChange={this.handleDescriptionChange(team._id)}
-                        />
-                      ))}
-                      {provided.placeholder}
-                    </div>
-                  )}
-                </Droppable>
-              </DragDropContext>
+              {rankingContent}
               <input
                 type="button"
                 className="btn btn-info"
