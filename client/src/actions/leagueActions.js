@@ -11,15 +11,18 @@ import {
 
 // Get all leagues belonging to a user
 export const getLeagues = () => dispatch => {
+  // Set state to loading
   setLeaguesLoading()
   axios
     .get('/api/leagues')
+    // If success, update league object
     .then(res =>
       dispatch({
         type: GET_LEAGUES,
         payload: res.data
       })
     )
+    // If error, set leagues object to empty
     .catch(err =>
       dispatch({
         type: GET_LEAGUES,
@@ -34,7 +37,9 @@ export const importLeague = (leagueId, history) => dispatch => {
     .post('/api/leagues', {
       leagueId: leagueId
     })
+    // If success, redirect to dashboard
     .then(res => history.push('/dashboard'))
+    // If error, return the error
     .catch(err =>
       dispatch({
         type: GET_ERRORS,
@@ -48,12 +53,14 @@ export const getCurrentLeague = leagueId => dispatch => {
   setLeaguesLoading()
   axios
     .get(`/api/leagues/${leagueId}`)
+    // If success, update the current league
     .then(res =>
       dispatch({
         type: GET_CURRENT_LEAGUE,
         payload: res.data
       })
     )
+    // If error, set current league object to null
     .catch(err =>
       dispatch({
         type: GET_CURRENT_LEAGUE,
@@ -62,18 +69,21 @@ export const getCurrentLeague = leagueId => dispatch => {
     )
 }
 
-// set leagues loading in state
+// Set leagues loading to true
 export const setLeaguesLoading = () => dispatch => {
   dispatch({
     type: LOADING_LEAGUES
   })
 }
+
+// Set league loading state to false
 export const stopLeaguesLoading = () => dispatch => {
   dispatch({
     type: STOP_LOADING_LEAGUE
   })
 }
 
+// Clear errors object
 export const clearImportErrors = () => dispatch => {
   dispatch({
     type: CLEAR_ERRORS

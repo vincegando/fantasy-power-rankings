@@ -1,6 +1,7 @@
 const Validator = require('validator')
 const isEmpty = require('./is-empty')
 
+// Check if the submitted login form is valid
 module.exports = function validateLoginInput(data) {
   let errors = {}
 

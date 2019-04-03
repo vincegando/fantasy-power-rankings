@@ -11,6 +11,7 @@ const initialState = {
   loading: false
 }
 
+// Set redux state when rankings actions occur
 export default function(state = initialState, action) {
   switch (action.type) {
     case GET_RANKINGS:

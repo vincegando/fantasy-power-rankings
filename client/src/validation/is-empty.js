@@ -1,3 +1,4 @@
+// Determine if a value is undefined, null, or empty
 const isEmpty = value =>
   value === undefined ||
   value === null ||

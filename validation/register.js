@@ -1,6 +1,7 @@
 const Validator = require('validator')
 const isEmpty = require('./is-empty')
 
+// Check if the submitted register form is valid
 module.exports = function validateRegisterInput(data) {
   let errors = {}
 

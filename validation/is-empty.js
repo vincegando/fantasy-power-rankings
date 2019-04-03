@@ -1,3 +1,5 @@
+// Check if an input is empty
+
 const isEmpty = value =>
   value === undefined ||
   value === null ||

@@ -4,8 +4,11 @@ import PropTypes from 'prop-types'
 import { getLeagues } from '../../actions/leagueActions'
 import { Link } from 'react-router-dom'
 import ShowLeagues from './ShowLeagues'
+import { Grid, Header, Button, Container } from 'semantic-ui-react'
 
+// Display user information such as the leagues they are members of
 class Dashboard extends Component {
+  // Load current user's leagues
   componentDidMount() {
     this.props.getLeagues()
   }
@@ -23,33 +26,55 @@ class Dashboard extends Component {
       if (Object.keys(leagues).length > 0) {
         dashboardContent = (
           <div>
-            <p>Welcome, {user.username}</p>
+            <Header as="h2" textAlign="center" style={{ marginTop: '10px' }}>
+              Welcome, {user.username}
+            </Header>
             <ShowLeagues leagues={leagues} />
-            <Link to="/import" className="btn btn-lg btn-info">
-              Import
-            </Link>
+            <div style={{ textAlign: 'center' }}>
+              <Button
+                as={Link}
+                to="/import"
+                size="large"
+                style={{ marginTop: '10px' }}
+                primary
+              >
+                Import
+              </Button>
+            </div>
           </div>
         )
       } else {
         dashboardContent = (
-          <div>
-            <p>Welcome, {user.username}</p>
-            <p>You are have not imported any leagues yet.</p>
-            <Link to="/import" className="btn btn-lg btn-info">
-              Import
-            </Link>
-          </div>
+          <Container>
+            <Header as="h1" textAlign="center" style={{ marginTop: '10px' }}>
+              Welcome, {user.username}
+            </Header>
+            <p style={{ textAlign: 'center' }}>
+              You have not imported any leagues yet
+            </p>
+            <div style={{ textAlign: 'center' }}>
+              <Button
+                as={Link}
+                to="/import"
+                size="large"
+                style={{ marginTop: '10px' }}
+                primary
+              >
+                Import
+              </Button>
+            </div>
+          </Container>
         )
       }
     }
 
     return (
       <div className="dashboard">
-        <div className="container">
-          <div className="row">
-            <div className="col-md-12">{dashboardContent}</div>
-          </div>
-        </div>
+        <Grid centered container>
+          <Grid.Row>
+            <Grid.Column width={12}>{dashboardContent}</Grid.Column>
+          </Grid.Row>
+        </Grid>
       </div>
     )
   }

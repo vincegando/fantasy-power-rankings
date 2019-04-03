@@ -4,9 +4,12 @@ import PropTypes from 'prop-types'
 import { getCurrentLeague } from '../../actions/leagueActions'
 import { getRankings } from '../../actions/rankingActions'
 import ShowRankings from './ShowRankings'
-import { Link } from 'react-router-dom'
+import { Link, withRouter } from 'react-router-dom'
+import { Grid, Header, Button, Loader, Icon } from 'semantic-ui-react'
 
+// Display all rankings made for a given league
 class League extends Component {
+  // Get current league info, then get all rankings for this league
   componentDidMount() {
     this.props.getCurrentLeague(this.props.match.params.leagueId)
     this.props.getRankings(this.props.match.params.leagueId)
@@ -20,33 +23,46 @@ class League extends Component {
     let pageContent
 
     if (league === null || loading || leagueLoading) {
-      pageContent = <h3>Loading...</h3>
+      pageContent = (
+        <Loader style={{ marginTop: '100px' }} size="large" active>
+          Loading
+        </Loader>
+      )
     } else {
       pageContent = (
         <div>
-          <div>
-            <h2>{league.leagueName}</h2>
-          </div>
+          <Button
+            size="large"
+            onClick={this.props.history.goBack}
+            style={{ marginTop: '10px' }}
+          >
+            <Icon name="arrow left" />
+            Back
+          </Button>
+          <Header as="h1" textAlign="center" style={{ marginTop: '10px' }}>
+            {league.leagueName}
+          </Header>
           <ShowRankings rankings={rankings} />
+          <Button
+            as={Link}
+            to={`/create-ranking/${league.leagueId}`}
+            size="large"
+            style={{ marginTop: '10px' }}
+            primary
+          >
+            Create a new Ranking
+          </Button>
         </div>
       )
     }
 
     return (
       <div className="league">
-        <div className="container">
-          <div className="row">
-            <div className="col-md-12">
-              {pageContent}
-              <Link
-                to={`/create-ranking/${league.leagueId}`}
-                className="btn btn-info"
-              >
-                Create a new Ranking
-              </Link>
-            </div>
-          </div>
-        </div>
+        <Grid centered>
+          <Grid.Row>
+            <Grid.Column width={12}>{pageContent}</Grid.Column>
+          </Grid.Row>
+        </Grid>
       </div>
     )
   }
@@ -67,4 +83,4 @@ const mapStateToProps = state => ({
 export default connect(
   mapStateToProps,
   { getCurrentLeague, getRankings }
-)(League)
+)(withRouter(League))

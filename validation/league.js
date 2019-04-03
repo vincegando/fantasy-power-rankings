@@ -1,6 +1,7 @@
 const Validator = require('validator')
 const isEmpty = require('./is-empty')
 
+// Check if leagueid is a valid input
 module.exports = function validateLeagueInput(data) {
   let errors = {}
 

@@ -1,7 +1,8 @@
 import React from 'react'
-import classnames from 'classnames'
 import PropTypes from 'prop-types'
+import { Form, Message, TextArea } from 'semantic-ui-react'
 
+// Customized text area field
 const TextAreaFieldGroup = ({
   name,
   placeholder,
@@ -11,19 +12,17 @@ const TextAreaFieldGroup = ({
   onChange
 }) => {
   return (
-    <div className="form-group">
-      <textarea
-        className={classnames('form-control form-control-lg', {
-          'is-invalid': error
-        })}
+    <Form>
+      <TextArea
+        error={error}
         placeholder={placeholder}
         name={name}
         value={value}
         onChange={onChange}
       />
       {info && <small className="form-text text-muted">{info}</small>}
-      {error && <div className="invalid-feedback">{error}</div>}
-    </div>
+      {error && <Message error size="tiny" content={error} />}
+    </Form>
   )
 }
 

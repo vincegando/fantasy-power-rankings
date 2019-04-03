@@ -7,6 +7,7 @@ const initialState = {
   user: {}
 }
 
+// Set redux state when user auth actions occer
 export default function(state = initialState, action) {
   switch (action.type) {
     case SET_CURRENT_USER:

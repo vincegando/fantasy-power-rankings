@@ -3,51 +3,64 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import Moment from 'react-moment'
 import { Link } from 'react-router-dom'
+import { Header, Button, Table } from 'semantic-ui-react'
 
+// Display rankings for a league in a table
+// Show edit ranking button if current user is the author of that ranking
+// Always show view ranking button
 class ShowRankings extends Component {
   render() {
     const { user } = this.props.auth
 
     const rankings = this.props.rankings.map(ranking => (
-      <tr key={ranking._id}>
-        <td>{ranking.title}</td>
-        <td>{ranking.author.username}</td>
-        <td>
+      <Table.Row key={ranking._id}>
+        <Table.Cell>{ranking.title}</Table.Cell>
+        <Table.Cell>{ranking.author.username}</Table.Cell>
+        <Table.Cell>
           <Moment format="MM/DD/YYYY">{ranking.created_at}</Moment>
-        </td>
-        <td>
+        </Table.Cell>
+        <Table.Cell>
           {user.username === ranking.author.username ? (
-            <Link
+            <Button
+              as={Link}
               to={`/edit-ranking/${ranking._id}`}
-              className="btn btn-danger"
+              size="large"
+              color="blue"
             >
               Edit
-            </Link>
+            </Button>
           ) : null}
-        </td>
-        <td>
-          <Link to={`/ranking/${ranking._id}`} className="btn btn-info">
+        </Table.Cell>
+        <Table.Cell>
+          <Button
+            as={Link}
+            to={`/ranking/${ranking._id}`}
+            size="large"
+            color="red"
+          >
             Show
-          </Link>
-        </td>
-      </tr>
+          </Button>
+        </Table.Cell>
+      </Table.Row>
     ))
 
     return (
       <div>
-        <h4>Rankings</h4>
-        <table className="table">
-          <thead>
-            <tr>
-              <th>Title</th>
-              <th>Created By</th>
-              <th>Date Created</th>
-              <th />
-              <th />
-            </tr>
-          </thead>
-          <tbody>{rankings}</tbody>
-        </table>
+        <Header as="h2" style={{ marginTop: '10px' }}>
+          Rankings
+        </Header>
+        <Table celled unstackable size="large">
+          <Table.Header>
+            <Table.Row>
+              <Table.HeaderCell>Title</Table.HeaderCell>
+              <Table.HeaderCell>Created By</Table.HeaderCell>
+              <Table.HeaderCell>Date Created</Table.HeaderCell>
+              <Table.HeaderCell collapsing />
+              <Table.HeaderCell collapsing />
+            </Table.Row>
+          </Table.Header>
+          <Table.Body>{rankings}</Table.Body>
+        </Table>
       </div>
     )
   }

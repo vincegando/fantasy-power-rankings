@@ -1,7 +1,8 @@
 import React from 'react'
-import classnames from 'classnames'
 import PropTypes from 'prop-types'
+import { Form, Message } from 'semantic-ui-react'
 
+// Customized text field
 const TextFieldGroup = ({
   name,
   placeholder,
@@ -14,21 +15,23 @@ const TextFieldGroup = ({
   disabled
 }) => {
   return (
-    <div className="form-group">
-      <input
+    <Form.Field>
+      <h4 style={{ marginTop: '10px' }}>{label}:</h4>
+      <Form.Input
         type={type}
-        className={classnames('form-control form-control-md', {
-          'is-invalid': error
-        })}
+        error={error}
         placeholder={placeholder}
         name={name}
         value={value}
         onChange={onChange}
         disabled={disabled}
+        fluid
+        size="big"
+        style={{ marginBottom: '10px' }}
       />
       {info && <small className="form-text text-muted">{info}</small>}
-      {error && <div className="invalid-feedback">{error}</div>}
-    </div>
+      {error && <Message error size="tiny" content={error} />}
+    </Form.Field>
   )
 }
 

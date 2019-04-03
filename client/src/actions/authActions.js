@@ -8,7 +8,9 @@ import { SET_CURRENT_USER, GET_ERRORS, CLEAR_ERRORS } from './types'
 export const registerUser = (userData, history) => dispatch => {
   axios
     .post('/api/users/register', userData)
+    // If success, redirect to login page
     .then(res => history.push('/login'))
+    // If error, return the error
     .catch(err =>
       dispatch({
         type: GET_ERRORS,
@@ -18,7 +20,7 @@ export const registerUser = (userData, history) => dispatch => {
 }
 
 // Login a user
-export const loginUser = userData => dispatch => {
+export const loginUser = (userData, history) => dispatch => {
   axios
     .post('/api/users/login', userData)
     .then(res => {
@@ -32,7 +34,10 @@ export const loginUser = userData => dispatch => {
       const decoded = jwt_decode(token)
       // Set current user
       dispatch(setCurrentUser(decoded))
+      // Redirect to dashboard
+      history.push('/dashboard')
     })
+    // If error, return the error
     .catch(err =>
       dispatch({
         type: GET_ERRORS,
@@ -42,13 +47,15 @@ export const loginUser = userData => dispatch => {
 }
 
 // Logout user
-export const logoutUser = () => dispatch => {
+export const logoutUser = history => dispatch => {
   // Remove token from localStorage
   localStorage.removeItem('jwtToken')
   // Remove auth header for future requests
   setAuthToken(false)
   // set current user to {}, also sets isAuthenticated to false
   dispatch(setCurrentUser({}))
+  // Redirect to Login page
+  history.push('/login')
 }
 
 // Set logged in user
@@ -59,6 +66,7 @@ export const setCurrentUser = decoded => {
   }
 }
 
+// Clear the errors object
 export const clearErrors = () => dispatch => {
   dispatch({
     type: CLEAR_ERRORS

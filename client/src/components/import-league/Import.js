@@ -4,7 +4,9 @@ import PropTypes from 'prop-types'
 import { withRouter } from 'react-router-dom'
 import { importLeague, clearImportErrors } from '../../actions/leagueActions'
 import TextFieldGroup from '../common/TextFieldGroup'
+import { Grid, Header, Button, Icon } from 'semantic-ui-react'
 
+// Import a fantasy league from ESPN. User enters their league id and submits form
 class Import extends Component {
   constructor(props) {
     super(props)
@@ -14,11 +16,13 @@ class Import extends Component {
     }
   }
 
+  // Clear errors when component is loaded
   componentDidMount() {
     this.props.clearImportErrors()
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
+    // If there are errors importing a league, set state with those errors
     if (nextProps.errors !== prevState.errors) {
       return { errors: nextProps.errors }
     } else {
@@ -30,9 +34,11 @@ class Import extends Component {
     this.setState({ [e.target.name]: e.target.value })
   }
 
+  // Submit import form to backend
   onSubmit = e => {
     e.preventDefault()
 
+    // Call import league action
     this.props.importLeague(this.state.leagueId, this.props.history)
   }
 
@@ -41,27 +47,45 @@ class Import extends Component {
 
     return (
       <div className="import">
-        <div className="container">
-          <div className="row">
-            <div className="col-md-12">
-              <p>Enter your league's ESPN League ID (Found in url):</p>
+        <Grid centered container>
+          <Grid.Row>
+            <Grid.Column width={12}>
+              <Button
+                size="large"
+                onClick={this.props.history.goBack}
+                style={{ marginTop: '10px' }}
+              >
+                <Icon name="arrow left" />
+                Back
+              </Button>
+              <Header as="h1" textAlign="center" style={{ marginTop: '10px' }}>
+                Import a League
+              </Header>
+              <p style={{ textAlign: 'center' }}>
+                Enter your league's ESPN League ID (Found in url). NOTE: League
+                must be public.
+              </p>
               <form noValidate onSubmit={this.onSubmit}>
                 <TextFieldGroup
                   name="leagueId"
                   placeholder="League ID"
+                  label="League ID"
                   value={this.state.leagueId}
                   onChange={this.onChange}
                   error={errors.leagueId}
                 />
-                <input
+                <Button
                   type="submit"
-                  value="Import"
-                  className="btn btn-info btn-block"
-                />
+                  size="large"
+                  primary
+                  style={{ marginTop: '10px' }}
+                >
+                  Import
+                </Button>
               </form>
-            </div>
-          </div>
-        </div>
+            </Grid.Column>
+          </Grid.Row>
+        </Grid>
       </div>
     )
   }

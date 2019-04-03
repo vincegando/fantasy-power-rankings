@@ -2,7 +2,9 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Draggable } from 'react-beautiful-dnd'
 import TextAreaFieldGroup from '../common/TextAreaFieldGroup'
+import { Header, Card } from 'semantic-ui-react'
 
+// Display each team as a draggable card for creating and editing rankings
 class Rank extends Component {
   render() {
     return (
@@ -14,16 +16,24 @@ class Rank extends Component {
             {...provided.dragHandleProps}
             isDragging={snapshot.isDragging}
           >
-            <h4>
-              {this.props.rank}. {this.props.team.teamName} (
-              {this.props.team.record})
-            </h4>
-            <TextAreaFieldGroup
-              placeholder="Description"
-              name="description"
-              value={this.props.team.description}
-              onChange={this.props.onChange}
-            />
+            <Card
+              fluid
+              raised
+              style={{ marginTop: '20px', marginBottom: '20px' }}
+            >
+              <Card.Content>
+                <Header as="h4">
+                  {this.props.rank}. {this.props.team.teamName} (
+                  {this.props.team.record})
+                </Header>
+                <TextAreaFieldGroup
+                  placeholder="Description"
+                  name="description"
+                  value={this.props.team.description}
+                  onChange={this.props.onChange}
+                />
+              </Card.Content>
+            </Card>
           </div>
         )}
       </Draggable>

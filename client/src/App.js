@@ -19,6 +19,7 @@ import League from './components/league/League'
 import ViewRanking from './components/rankings/ViewRanking'
 import CreateRanking from './components/rankings/CreateRanking'
 import EditRanking from './components/rankings/EditRanking'
+import NotFound from './components/layout/NotFound'
 
 import './App.css'
 
@@ -40,6 +41,7 @@ if (localStorage.jwtToken) {
   }
 }
 
+// Access point for application. Declare public and private routes
 class App extends Component {
   render() {
     return (
@@ -47,39 +49,31 @@ class App extends Component {
         <Router>
           <div className="App">
             <Navbar />
-            <Route exact path="/" component={Home} />
-            <div className="container">
+            <Switch>
+              <Route exact path="/" component={Home} />
               <Route exact path="/register" component={Register} />
               <Route exact path="/login" component={Login} />
               <Route exact path="/ranking/:id" component={ViewRanking} />
-              <Switch>
-                <PrivateRoute exact path="/dashboard" component={Dashboard} />
-              </Switch>
-              <Switch>
-                <PrivateRoute exact path="/import" component={Import} />
-              </Switch>
-              <Switch>
-                <PrivateRoute
-                  exact
-                  path="/league/:leagueId"
-                  component={League}
-                />
-              </Switch>
-              <Switch>
-                <PrivateRoute
-                  exact
-                  path="/create-ranking/:leagueId"
-                  component={CreateRanking}
-                />
-              </Switch>
-              <Switch>
-                <PrivateRoute
-                  exact
-                  path="/edit-ranking/:id"
-                  component={EditRanking}
-                />
-              </Switch>
-            </div>
+
+              <PrivateRoute exact path="/dashboard" component={Dashboard} />
+
+              <PrivateRoute exact path="/import" component={Import} />
+
+              <PrivateRoute exact path="/league/:leagueId" component={League} />
+
+              <PrivateRoute
+                exact
+                path="/create-ranking/:leagueId"
+                component={CreateRanking}
+              />
+
+              <PrivateRoute
+                exact
+                path="/edit-ranking/:id"
+                component={EditRanking}
+              />
+              <Route component={NotFound} />
+            </Switch>
           </div>
         </Router>
       </Provider>

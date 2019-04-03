@@ -1,10 +1,21 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import { withRouter } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import { getRanking } from '../../actions/rankingActions'
 import ShowRankingsList from './ShowRankingsList'
+import {
+  Grid,
+  Header,
+  Loader,
+  Container,
+  Button,
+  Icon
+} from 'semantic-ui-react'
 
+// Display ranking based on given id
 class ViewRankings extends Component {
+  // Get ranking info when component loads
   componentDidMount() {
     this.props.getRanking(this.props.match.params.id)
   }
@@ -14,23 +25,37 @@ class ViewRankings extends Component {
 
     let rankingContent
     if (ranking === null || loading || Object.keys(ranking).length === 0) {
-      rankingContent = <h3>Loading...</h3>
+      rankingContent = (
+        <Loader style={{ marginTop: '100px' }} size="large" active>
+          Loading
+        </Loader>
+      )
     } else {
       rankingContent = (
-        <div>
-          <h2>{ranking.title}</h2>
+        <Container>
+          <Button
+            size="large"
+            onClick={this.props.history.goBack}
+            style={{ marginTop: '10px' }}
+          >
+            <Icon name="arrow left" />
+            Back
+          </Button>
+          <Header as="h1" textAlign="center" style={{ marginTop: '10px' }}>
+            {ranking.title}
+          </Header>
           <ShowRankingsList rankings={ranking.rankings} />
-        </div>
+        </Container>
       )
     }
 
     return (
       <div className="view-ranking">
-        <div className="container">
-          <div className="row">
-            <div className="col-md-12">{rankingContent}</div>
-          </div>
-        </div>
+        <Grid centered container>
+          <Grid.Row>
+            <Grid.Column width={12}>{rankingContent}</Grid.Column>
+          </Grid.Row>
+        </Grid>
       </div>
     )
   }
@@ -48,4 +73,4 @@ const mapStateToProps = state => ({
 export default connect(
   mapStateToProps,
   { getRanking }
-)(ViewRankings)
+)(withRouter(ViewRankings))

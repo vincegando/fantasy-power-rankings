@@ -1,5 +1,6 @@
 import axios from 'axios'
 
+// Set auth token when user logs in or delete token when user logs out
 const setAuthToken = token => {
   if (token) {
     // Apply to every request

@@ -19,11 +19,9 @@ app.use(bodyParser.json())
 // CORS
 app.use(cors())
 
+// Connect to database
 mongoose
-  .connect(
-    db,
-    { useNewUrlParser: true }
-  )
+  .connect(db, { useNewUrlParser: true })
   .then(() => console.log('MongoDB connected...'))
   .catch(err => console.log(err))
 
@@ -38,6 +36,8 @@ app.use('/api/users', users)
 app.use('/api/leagues', leagues)
 app.use('/api/rankings', rankings)
 
+// Specify port to listen on
 port = process.env.PORT || 5000
 
+// Start the server
 app.listen(port, () => console.log(`Server listening on port ${port}...`))

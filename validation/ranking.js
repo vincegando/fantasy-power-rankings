@@ -1,6 +1,7 @@
 const Validator = require('validator')
 const isEmpty = require('./is-empty')
 
+// Check if the submitted ranking form is valid
 module.exports = function validateRankingInput(data) {
   let errors = {}
 

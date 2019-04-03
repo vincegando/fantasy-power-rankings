@@ -3,6 +3,7 @@ import { Route, Redirect } from 'react-router-dom'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 
+// Show private routes if a user is logged in, otherwise redirect to login page
 const PrivateRoute = ({ component: Component, auth, ...rest }) => (
   <Route
     {...rest}

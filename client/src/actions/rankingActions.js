@@ -13,12 +13,14 @@ export const getRankings = leagueId => dispatch => {
   dispatch(setRankingsLoading())
   axios
     .get(`/api/rankings/league/${leagueId}`)
+    // If success, update rankings object
     .then(res =>
       dispatch({
         type: GET_RANKINGS,
         payload: res.data
       })
     )
+    // If error, set rankings object to empty
     .catch(err =>
       dispatch({
         type: GET_RANKINGS,
@@ -32,12 +34,14 @@ export const getRanking = id => dispatch => {
   setRankingsLoading()
   axios
     .get(`/api/rankings/${id}`)
+    // If success, update ranking object
     .then(res =>
       dispatch({
         type: GET_RANKING,
         payload: res.data
       })
     )
+    // If error, set ranking object to null
     .catch(err =>
       dispatch({
         type: GET_RANKING,
@@ -50,7 +54,9 @@ export const getRanking = id => dispatch => {
 export const createRanking = (rankingData, history, leagueId) => dispatch => {
   axios
     .post('/api/rankings', rankingData)
+    // If success, redirect to current league page
     .then(res => history.push('/league/' + leagueId))
+    // If error, return the error
     .catch(err =>
       dispatch({
         type: GET_ERRORS,
@@ -68,7 +74,9 @@ export const editRanking = (
 ) => dispatch => {
   axios
     .post(`/api/rankings/${rankingId}`, rankingData)
+    // If success, redirect to league page
     .then(res => history.push('/league/' + leagueId))
+    // If error, return the error
     .catch(err =>
       dispatch({
         type: GET_ERRORS,
@@ -77,13 +85,14 @@ export const editRanking = (
     )
 }
 
-// set loading in state
+// Set ranking loading state to true
 export const setRankingsLoading = () => dispatch => {
   dispatch({
     type: LOADING_RANKINGS
   })
 }
 
+// Set ranking loading state to false
 export const stopRankingsLoading = () => dispatch => {
   dispatch({
     type: STOP_LOADING_RANKING

@@ -26,59 +26,69 @@ router.post(
         return res.status(400).json(errors)
       }
 
-      var leagueName
-      var teams = []
+      let leagueName
+      let teams = []
+      let memberInfo = {}
+      let currentSeason = 2019
 
+      // Call ESPN's api to get league info (league name, teams, owners, standings, etc)
       await axios
-        .get('http://games.espn.com/ffl/api/v2/leagueSettings', {
-          params: {
-            leagueId: req.body.leagueId
-          }
-        })
+        .get(
+          'http://fantasy.espn.com/apis/v3/games/ffl/seasons/' +
+            currentSeason +
+            '/segments/0/leagues/' +
+            req.body.leagueId +
+            '?view=mSettings&view=mTeam'
+        )
         .then(result => {
-          leagueName = result.data.leaguesettings.name
-        })
-        .catch(err => console.log(err))
+          // Set league name
+          leagueName = result.data.settings.name
 
-      await axios
-        .get('http://games.espn.com/ffl/api/v2/standings', {
-          params: {
-            leagueId: req.body.leagueId,
-            seasonId: 2018
-          }
-        })
-        .then(result => {
-          // console.log(result.data)
+          // Iterate through member info
+          result.data.members.map(member => {
+            memberInfo[member.id] = member.firstName + ' ' + member.lastName
+          })
+
+          // Iterate through league info
           result.data.teams.map(team => {
             let owners = []
             team.owners.map(owner => {
               owners.push({
-                name: owner.firstName + ' ' + owner.lastName
+                name: memberInfo[owner]
               })
             })
 
             const newTeam = {
-              teamName: team.teamLocation + ' ' + team.teamNickname,
+              teamName: team.location + ' ' + team.nickname,
               owners: owners,
-              standing: team.overallStanding,
-              record: team.record.overallWins + '-' + team.record.overallLosses
+              standing: team.playoffSeed,
+              record:
+                team.record.overall.wins + '-' + team.record.overall.losses
             }
 
             teams.push(newTeam)
           })
         })
-        .catch(err => console.log(err))
+        .catch(err => {
+          errors.leagueId =
+            'This league is private. To import a league, your league must be public.'
+          return res.status(400).json(errors)
+        })
 
+      // Find league by leagueid
       League.findOne({ leagueId: req.body.leagueId }).then(league => {
         if (league) {
           if (league.members.indexOf(req.user.id) > -1) {
+            // Already created and joined this league
             errors.leagueId = 'You have already imported/joined this league.'
             return res.status(400).json(errors)
           } else {
+            // League has been created, but this user hasn't joined yet
             league.members.push(req.user.id)
             league.save().then(league => res.json(league))
           }
         } else {
+          // League hasn't been created yet, create this league
           const newLeague = new League({
             creator: req.user.id,
             members: [req.user.id],
@@ -103,6 +113,7 @@ router.get(
   '/',
   passport.authenticate('jwt', { session: false }),
   (req, res) => {
+    // Find all leagues where this user is a member
     League.find({ members: mongoose.Types.ObjectId(req.user.id) })
       .then(leagues => {
         if (leagues) {
@@ -143,7 +154,7 @@ router.post(
       .then(league => {
         if (league) {
           if (league.members.indexOf(req.user.id) > -1) {
-            // update league name and team info
+            // League exists, current user is a member, update league name and team info
             league.leagueName = req.body.leagueName
 
             const teams = JSON.parse(req.body.teams)
@@ -151,6 +162,7 @@ router.post(
 
             league.save().then(league => res.json(league))
           } else {
+            // Current user is not a member of this league
             return res.status(401).json({
               notauthorized:
                 'You are not authorized to make updates to this league.'
@@ -173,9 +185,12 @@ router.delete(
   (req, res) => {
     League.findOne({ leagueId: req.params.id })
       .then(league => {
+        // Only the user who created the league can delete it
         if (league.creator.toString() === req.user.id) {
+          // Current user is the league creator, okay to delete
           league.remove().then(() => res.json({ success: true }))
         } else {
+          // Current user is not the league creator
           return res.status(401).json({
             notauthorized: 'You are not authorized to delete this league.'
           })

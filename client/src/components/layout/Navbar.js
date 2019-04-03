@@ -1,68 +1,58 @@
 import React, { Component } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, withRouter } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { logoutUser } from '../../actions/authActions'
+import { Menu, Container, Button } from 'semantic-ui-react'
 
+// Navbar at the top of page. Shows for all pages
 class Navbar extends Component {
+  // Call logout action when logout button is clicked
   onLogoutClick = e => {
     e.preventDefault()
-    this.props.logoutUser()
+    this.props.logoutUser(this.props.history)
   }
 
   render() {
     const { isAuthenticated, user } = this.props.auth
 
     const authLinks = (
-      <div className="navbar-nav ml-auto">
-        <li className="nav-item">
-          <Link to="/dashboard" className="nav-link">
-            Dashboard
-          </Link>
-        </li>
-        <li className="nav-item">
-          <a href="" onClick={this.onLogoutClick} className="nav-link">
+      <Container fluid>
+        <Menu.Item as={Link} to="/dashboard">
+          Dashboard
+        </Menu.Item>
+        <Menu.Item position="right">{user.username}</Menu.Item>
+        <Menu.Item>
+          <Button as={Link} to="/logout" onClick={this.onLogoutClick}>
             Logout
-          </a>
-        </li>
-      </div>
+          </Button>
+        </Menu.Item>
+      </Container>
     )
 
     const guestLinks = (
-      <div className="navbar-nav ml-auto">
-        <li className="nav-item">
-          <Link to="/register" className="nav-link">
+      <Container fluid>
+        <Menu.Item position="right">
+          <Button as={Link} to="/register" primary>
             Sign Up
-          </Link>
-        </li>
-        <li className="nav-item">
-          <Link to="/login" className="nav-link">
+          </Button>
+        </Menu.Item>
+        <Menu.Item>
+          <Button as={Link} to="/login">
             Login
-          </Link>
-        </li>
-      </div>
+          </Button>
+        </Menu.Item>
+      </Container>
     )
 
     return (
-      <nav className="navbar navbar-expand-sm navbar-dark bg-dark mb-4">
-        <div className="container">
-          <Link to="/" className="navbar-brand">
-            Power Rankings
-          </Link>
-          <button
-            className="navbar-toggler"
-            type="button"
-            data-toggle="collapse"
-            data-target="#mobile-nav"
-          >
-            <span className="navbar-toggler-icon" />
-          </button>
+      <Menu attached inverted stackable size="huge">
+        <Menu.Item header>
+          <Link to="/">Fantasy Rank</Link>
+        </Menu.Item>
 
-          <div className="collapse navbar-collapse" id="mobile-nav">
-            {isAuthenticated ? authLinks : guestLinks}
-          </div>
-        </div>
-      </nav>
+        {isAuthenticated ? authLinks : guestLinks}
+      </Menu>
     )
   }
 }
@@ -79,4 +69,4 @@ const mapStateToProps = state => ({
 export default connect(
   mapStateToProps,
   { logoutUser }
-)(Navbar)
+)(withRouter(Navbar))

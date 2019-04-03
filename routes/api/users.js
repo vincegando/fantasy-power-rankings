@@ -24,11 +24,14 @@ router.post('/register', (req, res) => {
     return res.status(400).json(errors)
   }
 
+  // Find user by email
   User.findOne({ email: req.body.email }).then(user => {
     if (user) {
+      // User already exists
       errors.email = 'This email has already been registered.'
       return res.status(400).json(errors)
     } else {
+      // User doesn't exist, create a new user
       User.findOne({ username: req.body.username }).then(user => {
         if (user) {
           errors.username = 'This username already exists.'
@@ -69,11 +72,14 @@ router.post('/login', (req, res) => {
   const email = req.body.email
   const password = req.body.password
 
+  // Find user by email
   User.findOne({ email: email }).then(user => {
     if (!user) {
+      // No user matching that email
       errors.email = 'User not found.'
       return res.status(400).json(errors)
     } else {
+      // Found the correct user, check if password is correct
       bcrypt.compare(password, user.password).then(isMatch => {
         if (isMatch) {
           const payload = {
@@ -104,21 +110,6 @@ router.get(
   '/current',
   passport.authenticate('jwt', { session: false }),
   (req, res) => {
-    // const obj = [
-    //   {
-    //     rank: 2,
-    //     teamName: 'Test1',
-    //     description: 'Testing rank 2 desc.'
-    //   },
-    //   {
-    //     rank: 1,
-    //     teamName: 'Test2',
-    //     description: 'This is a test rank 1 desc.'
-    //   }
-    // ]
-
-    // console.log(JSON.stringify(obj))
-
     res.json({
       id: req.user.id,
       username: req.user.username,

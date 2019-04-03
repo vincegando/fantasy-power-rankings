@@ -4,7 +4,9 @@ import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { registerUser, clearErrors } from '../../actions/authActions'
 import TextFieldGroup from '../common/TextFieldGroup'
+import { Grid, Header, Button } from 'semantic-ui-react'
 
+// Register a new user
 class Register extends Component {
   constructor(props) {
     super(props)
@@ -17,6 +19,7 @@ class Register extends Component {
     }
   }
 
+  // If user is logged in, redirect to dashboard
   componentDidMount() {
     this.props.clearErrors()
     if (this.props.auth.isAuthenticated) {
@@ -25,6 +28,7 @@ class Register extends Component {
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
+    // If there are errors with registering, set state with those errors
     if (nextProps.errors !== prevState.errors) {
       return { errors: nextProps.errors }
     } else {
@@ -36,6 +40,7 @@ class Register extends Component {
     this.setState({ [e.target.name]: e.target.value })
   }
 
+  // Submit register form to backend
   onSubmit = e => {
     e.preventDefault()
 
@@ -46,6 +51,7 @@ class Register extends Component {
       password2: this.state.password2
     }
 
+    // Call register action
     this.props.registerUser(newUser, this.props.history)
   }
 
@@ -54,15 +60,18 @@ class Register extends Component {
 
     return (
       <div className="register">
-        <div className="container">
-          <div className="row">
-            <div className="col-md-8 m-auto">
-              <h1 className="text-center">Sign Up</h1>
-              <p className="text-center">Create an account</p>
+        <Grid centered container>
+          <Grid.Row>
+            <Grid.Column width={8}>
+              <Header as="h1" textAlign="center" style={{ marginTop: '10px' }}>
+                Sign Up
+              </Header>
+              <p style={{ textAlign: 'center' }}>Create an account</p>
               <form noValidate onSubmit={this.onSubmit}>
                 <TextFieldGroup
                   name="username"
                   placeholder="Username"
+                  label="Username"
                   value={this.state.username}
                   onChange={this.onChange}
                   error={errors.username}
@@ -71,6 +80,7 @@ class Register extends Component {
                   name="email"
                   type="email"
                   placeholder="Email"
+                  label="Email"
                   value={this.state.email}
                   onChange={this.onChange}
                   error={errors.email}
@@ -79,6 +89,7 @@ class Register extends Component {
                   name="password"
                   type="password"
                   placeholder="Password"
+                  label="Password"
                   value={this.state.password}
                   onChange={this.onChange}
                   error={errors.password}
@@ -87,15 +98,23 @@ class Register extends Component {
                   name="password2"
                   type="password"
                   placeholder="Confirm Password"
+                  label="Confirm Password"
                   value={this.state.password2}
                   onChange={this.onChange}
                   error={errors.password2}
                 />
-                <input type="submit" className="btn btn-info btn-block mt-4" />
+                <Button
+                  type="submit"
+                  size="large"
+                  primary
+                  style={{ marginTop: '10px' }}
+                >
+                  Sign Up
+                </Button>
               </form>
-            </div>
-          </div>
-        </div>
+            </Grid.Column>
+          </Grid.Row>
+        </Grid>
       </div>
     )
   }
