@@ -2,7 +2,7 @@ const express = require('express')
 const mongoose = require('mongoose')
 const bodyParser = require('body-parser')
 const passport = require('passport')
-const cors = require('cors')
+const path = require('path')
 
 const db = require('./config/keys').mongoURI
 
@@ -15,9 +15,6 @@ const app = express()
 // Body Parser middleware
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
-
-// CORS
-app.use(cors())
 
 // Connect to database
 mongoose
@@ -35,6 +32,16 @@ require('./config/passport')(passport)
 app.use('/api/users', users)
 app.use('/api/leagues', leagues)
 app.use('/api/rankings', rankings)
+
+// If in production, use static assets
+if (process.env.NODE_ENV === 'production') {
+  // Use static folder
+  app.use(express.static('client/build'))
+  // Use path to entry file
+  app.get('*', (req, res) => {
+    res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'))
+  })
+}
 
 // Specify port to listen on
 port = process.env.PORT || 5000
