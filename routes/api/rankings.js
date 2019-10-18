@@ -55,6 +55,7 @@ router.post(
             const newRanking = new Ranking({
               leagueId: league.leagueId,
               title: req.body.title,
+              intro: req.body.intro,
               rankings: req.body.rankings,
               author: req.user.id
             })
@@ -105,6 +106,7 @@ router.post(
             // Ranking is valid, update content
             ranking.rankings = req.body.rankings
             ranking.title = req.body.title
+            ranking.intro = req.body.intro
             // Save ranking
             ranking.save().then(ranking => res.json(ranking))
           } else {

@@ -25,14 +25,10 @@ class Home extends Component {
   render() {
     return (
       <div className="home">
-        <Container fluid className="image-container">
+        <div className="image-container">
           <Image className="field" src={field} fluid />
           <div className="image-text">
-            <Header
-              as="h1"
-              content="Fantasy Rank"
-              style={{ fontSize: '4em' }}
-            />
+            <h1 className="header-font">Fantasy Rank</h1>
             <p>Create power rankings for your ESPN Fantasy League</p>
             <Button as={Link} to="/register" size="huge" primary>
               Sign Up
@@ -41,7 +37,7 @@ class Home extends Component {
               Login
             </Button>
           </div>
-        </Container>
+        </div>
         <Segment vertical>
           <Header
             as="h1"

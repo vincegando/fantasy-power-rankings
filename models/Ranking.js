@@ -10,6 +10,10 @@ const RankingSchema = new Schema({
     type: String,
     required: true
   },
+  intro: {
+    type: String,
+    required: true
+  },
   rankings: [
     {
       rank: {
@@ -20,6 +24,14 @@ const RankingSchema = new Schema({
         type: String,
         required: true
       },
+      owners: [
+        {
+          name: {
+            type: String,
+            required: true
+          }
+        }
+      ],
       record: {
         type: String,
         required: true

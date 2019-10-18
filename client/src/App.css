@@ -1,10 +1,12 @@
 .image-container {
-  position: relative;
   text-align: center;
+  display: block;
+  padding-bottom: 50px;
 }
 
 .image-text {
   position: absolute;
+  display: block;
   top: 30%;
   left: 50%;
   transform: translate(-50%, -50%);
@@ -15,4 +17,21 @@ img.field {
   filter: contrast(50%);
   max-width: 100%;
   height: auto;
+}
+
+.content {
+  white-space: pre-wrap;
+}
+
+.header-font {
+  font-size: 4em;
+}
+
+@media (max-width: 600px) {
+  .header-font {
+    font-size: 2em;
+  }
+  .image-text {
+    top: 25%;
+  }
 }

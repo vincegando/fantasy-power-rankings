@@ -11,6 +11,7 @@ import {
 } from '../../actions/rankingActions'
 import Rank from './Rank'
 import TextFieldGroup from '../common/TextFieldGroup'
+import TextAreaFieldGroup from '../common/TextAreaFieldGroup'
 import { Grid, Header, Button, Loader, Icon, Message } from 'semantic-ui-react'
 
 // Display ranking info based on given id. User can modify ranking info then save
@@ -19,6 +20,7 @@ class EditRanking extends Component {
     super(props)
     this.state = {
       title: '',
+      intro: '',
       teamInfo: [],
       loading: false,
       leagueId: '',
@@ -39,6 +41,7 @@ class EditRanking extends Component {
 
         this.setState({
           title: res.data.title,
+          intro: res.data.intro,
           teamInfo: rankings,
           leagueId: res.data.leagueId,
           loading: false
@@ -127,6 +130,7 @@ class EditRanking extends Component {
 
     const updatedRanking = {
       title: this.state.title,
+      intro: this.state.intro,
       rankings: updated
     }
 
@@ -176,6 +180,15 @@ class EditRanking extends Component {
             onChange={this.onChange}
             error={errors.title}
           />
+          <p style={{ fontSize: '20px' }}>Intro:</p>
+          <TextAreaFieldGroup
+            name="intro"
+            placeholder="Intro"
+            label="Intro"
+            value={this.state.intro}
+            onChange={this.onChange}
+            error={errors.intro}
+          />
           <Droppable droppableId="droppable">
             {(provided, snapshot) => (
               <div ref={provided.innerRef}>
@@ -184,6 +197,7 @@ class EditRanking extends Component {
                     key={team._id}
                     team={team}
                     rank={team.rank}
+                    owners={team.owners}
                     index={index}
                     onChange={this.handleDescriptionChange(team._id)}
                   />
@@ -214,8 +228,8 @@ class EditRanking extends Component {
     return (
       <div className="edit-ranking">
         <Grid centered container>
-          <Grid.Row>
-            <Grid.Column width={12}>{rankingContent}</Grid.Column>
+          <Grid.Row width={12}>
+            <Grid.Column>{rankingContent}</Grid.Column>
           </Grid.Row>
         </Grid>
       </div>

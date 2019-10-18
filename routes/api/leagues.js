@@ -27,9 +27,9 @@ router.post(
       }
 
       let leagueName
-      let teams = []
-      let memberInfo = {}
-      let currentSeason = 2019
+      const teams = []
+      const memberInfo = {}
+      const currentSeason = 2019
 
       // Call ESPN's api to get league info (league name, teams, owners, standings, etc)
       await axios
@@ -51,7 +51,7 @@ router.post(
 
           // Iterate through league info
           result.data.teams.map(team => {
-            let owners = []
+            const owners = []
             team.owners.map(owner => {
               owners.push({
                 name: memberInfo[owner]
@@ -70,8 +70,7 @@ router.post(
           })
         })
         .catch(err => {
-          errors.leagueId =
-            'This league is private. To import a league, your league must be public.'
+          errors.leagueId = `Could not get information from ESPN about league with leagueId: ${req.body.leagueId}`
           return res.status(400).json(errors)
         })
 
@@ -143,36 +142,86 @@ router.get(
   }
 )
 
-// @route POST api/league/:id
+// @route POST api/leagues/:id
 // @desc Update league info by ESPN id
 // @access Private
 router.post(
   '/:id',
   passport.authenticate('jwt', { session: false }),
-  (req, res) => {
-    League.findOne({ leagueId: req.params.id })
-      .then(league => {
-        if (league) {
-          if (league.members.indexOf(req.user.id) > -1) {
-            // League exists, current user is a member, update league name and team info
-            league.leagueName = req.body.leagueName
+  async (req, res) => {
+    try {
+      const errors = {}
+      let leagueName
+      const teams = []
+      const memberInfo = {}
+      const currentSeason = 2019
 
-            const teams = JSON.parse(req.body.teams)
-            league.teams = teams
+      // Call ESPN API
+      await axios
+        .get(
+          'http://fantasy.espn.com/apis/v3/games/ffl/seasons/' +
+            currentSeason +
+            '/segments/0/leagues/' +
+            req.params.id +
+            '?view=mSettings&view=mTeam'
+        )
+        .then(result => {
+          leagueName = result.data.settings.name
 
-            league.save().then(league => res.json(league))
-          } else {
-            // Current user is not a member of this league
-            return res.status(401).json({
-              notauthorized:
-                'You are not authorized to make updates to this league.'
+          result.data.members.map(member => {
+            memberInfo[member.id] = member.firstName + ' ' + member.lastName
+          })
+
+          result.data.teams.map(team => {
+            const owners = []
+            team.owners.map(owner => {
+              owners.push({
+                name: memberInfo[owner]
+              })
             })
+
+            const updatedTeam = {
+              teamName: team.location + ' ' + team.nickname,
+              owners: owners,
+              standing: team.playoffSeed,
+              record:
+                team.record.overall.wins + '-' + team.record.overall.losses
+            }
+
+            teams.push(updatedTeam)
+          })
+        })
+        .catch(err => {
+          errors.leagueId = `Could not get information from ESPN about league with leagueId: ${req.params.id}`
+          return res.status(400).json(errors)
+        })
+
+      // Find league by leagueId
+      League.findOne({ leagueId: req.params.id })
+        .then(league => {
+          if (league) {
+            if (league.members.indexOf(req.user.id) > -1) {
+              // League exists, current user is a member, update league name and team info
+              league.leagueName = leagueName
+
+              league.teams = teams
+
+              league.save().then(league => res.json(league))
+            } else {
+              // Current user is not a member of this league
+              return res.status(401).json({
+                notauthorized:
+                  'You are not authorized to make updates to this league.'
+              })
+            }
           }
-        }
-      })
-      .catch(err =>
-        res.status(404).json({ notfound: 'This league was not found.' })
-      )
+        })
+        .catch(err =>
+          res.status(404).json({ notfound: 'This league was not found.' })
+        )
+    } catch (e) {
+      console.log(e)
+    }
   }
 )
 

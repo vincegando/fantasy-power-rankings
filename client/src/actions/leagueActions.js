@@ -69,6 +69,17 @@ export const getCurrentLeague = leagueId => dispatch => {
     )
 }
 
+export const updateLeague = leagueId => dispatch => {
+  // TODO: set some kind of loading spinner or message to indicate success
+  console.log('here')
+  axios.post(`/api/leagues/${leagueId}`).catch(err =>
+    dispatch({
+      type: GET_ERRORS,
+      payload: err.response.data
+    })
+  )
+}
+
 // Set leagues loading to true
 export const setLeaguesLoading = () => dispatch => {
   dispatch({

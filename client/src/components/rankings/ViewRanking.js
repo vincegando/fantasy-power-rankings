@@ -44,6 +44,7 @@ class ViewRankings extends Component {
           <Header as="h1" textAlign="center" style={{ marginTop: '10px' }}>
             {ranking.title}
           </Header>
+          <p style={{ textAlign: 'center' }}>{ranking.intro}</p>
           <ShowRankingsList rankings={ranking.rankings} />
         </Container>
       )
@@ -52,8 +53,8 @@ class ViewRankings extends Component {
     return (
       <div className="view-ranking">
         <Grid centered container>
-          <Grid.Row>
-            <Grid.Column width={12}>{rankingContent}</Grid.Column>
+          <Grid.Row width={12}>
+            <Grid.Column textAlign="center">{rankingContent}</Grid.Column>
           </Grid.Row>
         </Grid>
       </div>

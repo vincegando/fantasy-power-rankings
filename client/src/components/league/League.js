@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import { getCurrentLeague } from '../../actions/leagueActions'
+import { getCurrentLeague, updateLeague } from '../../actions/leagueActions'
 import { getRankings } from '../../actions/rankingActions'
 import ShowRankings from './ShowRankings'
 import { Link, withRouter } from 'react-router-dom'
@@ -13,6 +13,10 @@ class League extends Component {
   componentDidMount() {
     this.props.getCurrentLeague(this.props.match.params.leagueId)
     this.props.getRankings(this.props.match.params.leagueId)
+  }
+
+  onUpdateClick = () => {
+    this.props.updateLeague(this.props.match.params.leagueId)
   }
 
   render() {
@@ -38,6 +42,15 @@ class League extends Component {
           >
             <Icon name="arrow left" />
             Back
+          </Button>
+          <Button
+            size="large"
+            onClick={this.onUpdateClick}
+            color="green"
+            floated="right"
+            style={{ marginTop: '10px' }}
+          >
+            Refresh Standings
           </Button>
           <Header as="h1" textAlign="center" style={{ marginTop: '10px' }}>
             {league.leagueName}
@@ -71,6 +84,7 @@ class League extends Component {
 League.propTypes = {
   getCurrentLeague: PropTypes.func.isRequired,
   getRankings: PropTypes.func.isRequired,
+  updateLeague: PropTypes.func.isRequired,
   league: PropTypes.object.isRequired,
   ranking: PropTypes.object.isRequired
 }
@@ -82,5 +96,5 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { getCurrentLeague, getRankings }
+  { getCurrentLeague, getRankings, updateLeague }
 )(withRouter(League))

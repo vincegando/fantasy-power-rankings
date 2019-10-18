@@ -12,6 +12,7 @@ import {
 } from '../../actions/leagueActions'
 import Rank from './Rank'
 import TextFieldGroup from '../common/TextFieldGroup'
+import TextAreaFieldGroup from '../common/TextAreaFieldGroup'
 import { Grid, Header, Button, Loader, Icon, Message } from 'semantic-ui-react'
 
 // Display info about teams in league. User can reorder teams, add descriptions, and add a title
@@ -20,6 +21,7 @@ class CreateRanking extends Component {
     super(props)
     this.state = {
       title: '',
+      intro: '',
       teamInfo: [],
       loading: false,
       empty: false,
@@ -115,7 +117,7 @@ class CreateRanking extends Component {
     e.preventDefault()
     let empty = false
     const stripped = this.state.teamInfo.map(
-      ({ _id, owners, standing, ...rest }, index) => {
+      ({ _id, standing, ...rest }, index) => {
         if (rest.description === '') {
           empty = true
         }
@@ -131,6 +133,7 @@ class CreateRanking extends Component {
     const newRanking = {
       leagueId: this.props.match.params.leagueId,
       title: this.state.title,
+      intro: this.state.intro,
       rankings: stripped
     }
 
@@ -178,6 +181,14 @@ class CreateRanking extends Component {
             onChange={this.onChange}
             error={errors.title}
           />
+          <p style={{ fontSize: '20px' }}>Intro:</p>
+          <TextAreaFieldGroup
+            name="intro"
+            placeholder="Intro"
+            value={this.state.intro}
+            onChange={this.onChange}
+            error={errors.intro}
+          />
           <Droppable droppableId="droppable">
             {(provided, snapshot) => (
               <div ref={provided.innerRef}>
@@ -186,6 +197,7 @@ class CreateRanking extends Component {
                     key={team._id}
                     team={team}
                     rank={team.standing}
+                    owners={team.owners}
                     index={index}
                     onChange={this.handleDescriptionChange(team._id)}
                   />
@@ -216,8 +228,8 @@ class CreateRanking extends Component {
     return (
       <div className="create-ranking">
         <Grid centered container>
-          <Grid.Row>
-            <Grid.Column width={12}>{rankingContent}</Grid.Column>
+          <Grid.Row width={12}>
+            <Grid.Column>{rankingContent}</Grid.Column>
           </Grid.Row>
         </Grid>
       </div>
